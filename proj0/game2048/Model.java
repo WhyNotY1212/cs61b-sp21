@@ -1,16 +1,20 @@
 package game2048;
 
+import java.util.Arrays;
 import java.util.Formatter;
+import java.util.Objects;
 import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author YYYguai  TODO: YOUR NAME HERE
  */
 public class Model extends Observable {
+
     /** Current contents of the board. */
     private Board board;
     /** Current score. */
+    public Tile[] temp = new Tile[Main.BOARD_SIZE];
     private int score;
     /** Maximum score so far.  Updated when game ends. */
     private int maxScore;
@@ -95,7 +99,6 @@ public class Model extends Observable {
     }
 
     /** Tilt the board toward SIDE. Return true iff this changes the board.
-     *
      * 1. If two Tile objects are adjacent in the direction of motion and have
      *    the same value, they are merged into one Tile of twice the original
      *    value and that new value is added to the score instance variable
@@ -105,7 +108,7 @@ public class Model extends Observable {
      * 3. When three adjacent tiles in the direction of motion have the same
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
-     * */
+     **/
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -113,7 +116,125 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        for (int c = 0; c < board.size(); c+=1){
+            int num = 0;
+            Tile.resetTileArray(temp);
+            for (int r = 0; r < board.size(); r+=1){
+                Tile t = board.tile(c,r);
+                if (board.tile(c,r)!=null){
+                    temp[num] = t;
+                    num+=1;
+                }
+            }    switch (num){
+                    case 0:
 
+                    continue;
+
+                    case 1:
+                        board.move(c,3,temp[0]);
+                        changed = true;
+                        break;
+                    case 2:
+                        if (temp[0].value()==temp[1].value()){
+                            board.move(c,3,temp[0]);
+                            board.move(c,3,temp[1]);
+                            changed=true;
+                            this.score += 2*temp[0].value();
+                            break;
+                        }
+                        else {
+                            board.move(c,2,temp[0]);
+                            board.move(c,3,temp[1]);
+                            changed=true;
+                            break;
+                        }
+                    case 3:
+                        if (temp[0].value()==temp[1].value()&&temp[2].value()==temp[1].value()){
+                            board.move(c,2,temp[0]);
+                            board.move(c,3,temp[1]);
+                            board.move(c,3,temp[2]);
+                            changed=true;
+                            this.score += 2*temp[0].value();
+                            break;
+                        }
+                        else if (temp[1].value()==temp[2].value()&&temp[1].value()!=temp[0].value()){
+                            board.move(c,3,temp[1]);
+                            board.move(c,3,temp[2]);
+                            board.move(c,2,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[1].value();
+                            break;
+                        }
+                        else if (temp[0].value()==temp[1].value()&&temp[0].value()!=temp[2].value()){
+                            board.move(c,2,temp[1]);
+                            board.move(c,3,temp[2]);
+                            board.move(c,2,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[1].value();
+                            break;
+                        }
+                        else if (temp[0].value()!=temp[1].value()&&temp[0].value()!=temp[2].value()&&temp[1].value()!=temp[2].value()){
+                            board.move(c,3,temp[2]);
+                            board.move(c,2,temp[1]);
+                            board.move(c,1,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[1].value();
+                            break;
+                        }
+                    case 4:
+                        if (temp[0].value()==temp[1].value()&&temp[0].value()==temp[2].value()&&temp[0].value()==temp[3].value()){
+                            //2.2.2.2
+                            board.move(c,3,temp[3]);
+                            board.move(c,3,temp[2]);
+                            board.move(c,2,temp[1]);
+                            board.move(c,2,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[0].value();
+                            break;
+                        }
+                        else if (temp[0].value()!=temp[1].value()&&temp[1].value()==temp[2].value()&&temp[1].value()==temp[3].value()){
+                            //4.4.4.2
+                            board.move(c,3,temp[3]);
+                            board.move(c,3,temp[2]);
+                            board.move(c,2,temp[1]);
+                            board.move(c,1,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[1].value();
+                            break;
+                        }
+                        else if (temp[0].value()==temp[1].value()&&temp[0].value()!=temp[2].value()&&temp[0].value()!=temp[3].value()){
+
+                            board.move(c,3,temp[3]);
+                            board.move(c,2,temp[2]);
+                            board.move(c,1,temp[1]);
+                            board.move(c,1,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[0].value();
+                            break;
+                        }
+                        else if (temp[0].value()!=temp[1].value()&&temp[1].value()==temp[2].value()&&temp[2].value()==temp[3].value()){
+                            //16.4.4.4
+                            board.move(c,3,temp[3]);
+                            board.move(c,2,temp[2]);
+                            board.move(c,2,temp[1]);
+                            board.move(c,1,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[1].value();
+                            break;
+                        }
+                        else if (temp[0].value()!=temp[1].value()&&temp[1].value()==temp[2].value()&&temp[0].value()!=temp[3].value()){
+                            //8.4.4.2
+                            board.move(c,3,temp[3]);
+                            board.move(c,2,temp[2]);
+                            board.move(c,1,temp[1]);
+                            board.move(c,1,temp[0]);
+                            changed=true;
+                            this.score += 2*temp[0].value();
+                            break;
+                            //2.4.2.2
+                        }
+                }
+        }
         checkGameOver();
         if (changed) {
             setChanged();
@@ -138,18 +259,40 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        int size =b.size();
+        for (int col = 0; col < size; col+=1){
+            for (int raw = 0; raw < size; raw+=1){
+                if (b.tile(col,raw)==null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
     /**
      * Returns true if any tile is equal to the maximum valid value.
-     * Maximum valid value is given by MAX_PIECE. Note that
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        int value;
+        for (int col = 0; col < size; col++) {
+            for (int row = 0; row < size; row++) {
+                if (b.tile(col,row)!=null) {
+                    value = b.tile(col,row).value();
+                }
+                else {
+                    value = 0;
+                }
+                if (value == MAX_PIECE){
+                    return true;
+                }
+            }
+        }
         return false;
     }
+
 
     /**
      * Returns true if there are any valid moves on the board.
@@ -158,6 +301,35 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
+        int size = b.size();
+        int temp;
+        if (emptySpaceExists(b)){
+            return true;
+        }
+        else {
+        for (int col = 0; col<size; col++){
+            for (int row = 0; row < size; row++){
+                if (b.tile(col,row)!=null){
+                    temp = b.tile(col,row).value();
+                }
+                else {
+                    temp = 0;
+                }
+                if (col > 0 && b.tile(col-1,row).value() == temp){
+                    return true;
+                }
+                if (col+1<size && b.tile(col+1,row).value() == temp){
+                    return true;
+                }
+                if (row > 0 && b.tile(col,row-1).value() == temp){
+                    return true;
+                }
+                if (row+1<size && b.tile(col,row+1).value() == temp){
+                    return true;
+                }
+            }
+        }
+        }
         // TODO: Fill in this function.
         return false;
     }

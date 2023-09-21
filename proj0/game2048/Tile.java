@@ -25,6 +25,7 @@ public class Tile {
         return col;
     }
 
+
     /** Return the value supplied to my constructor. */
     public int value() {
         return value;
@@ -55,7 +56,11 @@ public class Tile {
         next = otherTile.next = new Tile(2 * value, col, row);
         return next;
     }
-
+    public static void resetTileArray(Tile[] tileArray) {
+        for (int i = 0; i < tileArray.length; i++) {
+            tileArray[i] = null;
+        }
+    }
     /** Return the distance in rows or columns between me and my successor
      *  tile (0 if I have no successor). */
     public int distToNext() {
@@ -74,6 +79,8 @@ public class Tile {
 
     /** My value. */
     private final int value;
+
+    private int mergevalue=0;
 
     /** My last position on the board. */
     private final int row, col;

@@ -21,7 +21,11 @@ public enum Side {
      *  standard coordinates, one can arrange to use exactly the same code
      *  to compute the result of tilting the board in any particular
      *  direction. */
-
+     /*
+    东 - East
+    西 - West
+    南 - South
+    北 - North*/
     NORTH(0, 0, 0, 1), EAST(0, 1, 1, 0), SOUTH(1, 1, 0, -1),
     WEST(1, 0, -1, 0);
 
