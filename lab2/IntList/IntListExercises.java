@@ -1,6 +1,7 @@
 package IntList;
 
 public class IntListExercises {
+    public static boolean prime = false;
 
     /**
      * Part A: (Buggy) mutative method that adds a constant C to each
@@ -75,8 +76,11 @@ public class IntListExercises {
 
         if (currElemIsPrime) {
             lst.first *= lst.first;
+            prime = true;
         }
-
-        return currElemIsPrime || squarePrimes(lst.rest);
+        if (lst.rest == null){
+            return prime; //定义了一个boolean类的变量，如果列表没有遍历完就开始递归，
+        }
+            return squarePrimes(lst.rest);
     }
 }
